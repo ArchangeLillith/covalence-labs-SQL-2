@@ -1,0 +1,117 @@
+CREATE SCHEMA chirper;
+USE chirper;
+CREATE TABLE users(
+id INT auto_increment,
+handle VARCHAR(50) UNIQUE,
+email VARCHAR(50) UNIQUE,
+created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+PRIMARY KEY(id));
+CREATE TABLE chirps(
+id INT auto_increment,
+user_id INT,
+body TEXT, 
+location varchar(255),
+CREATED_AT DATETIME DEFAULT CURRENT_TIMESTAMP,
+PRIMARY KEY (id),
+ FOREIGN KEY (user_id) REFERENCES users(id));
+
+INSERT INTO users (handle, email) VALUES
+("a","a@a.com"),
+("b", "b@b.com"),
+("c","c@c.com"),
+("d","d@d.com"),
+("e","e@e.com");
+
+SELECT * FROM users;
+
+INSERT INTO chirps (user_id, body, location) VALUES
+(1, "Hello", "Dubai"),
+(2, "Hi", "Mumbai"),
+(3, "Hey", "Vancouver"),
+(4, "Hello", "Texas"),
+(5, "Whats up", "Oklahoma");
+
+SELECT * FROM chirps;
+
+INSERT INTO chirps (user_id, body, location) VALUES
+(2, "Hello", "Dubai"),
+(3, "Hi", "Mumbai"),
+(4, "Hey", "Vancouver"),
+(5, "Hello", "Texas"),
+(1, "Whats up", "Oklahoma");
+
+INSERT INTO chirps (user_id, body, location) VALUES
+(3, "Hello", "Dubai"),
+(4, "Hi", "Mumbai"),
+(5, "Hey", "Vancouver"),
+(1, "Hello", "Texas"),
+(2, "Whats up", "Oklahoma");
+
+INSERT INTO chirps (user_id, body, location) VALUES
+(4, "Hello", "Dubai"),
+(5, "Hi", "Mumbai"),
+(1, "Hey", "Vancouver"),
+(2, "Hello", "Texas"),
+(3, "Whats up", "Oklahoma");
+
+INSERT INTO chirps (user_id, body, location) VALUES
+(5, "Hello", "Dubai"),
+(1, "Hi", "Mumbai"),
+(2, "Hey", "Vancouver"),
+(3, "Hello", "Texas"),
+(4, "Whats up", "Oklahoma");
+
+SELECT * FROM chirps;
+
+INSERT INTO users (handle, email) VALUE ("f", "f@f.com");
+
+-- Get the chirps table with their associated handle and email
+SELECT    
+	chirps.user_id,
+	chirps.body,
+    chirps.location,
+    chirps.created_at AS chirp_created_at,
+    users.handle,
+    users.email
+FROM chirps
+JOIN users ON users.id = chirps.user_id;
+
+-- Get the chrips and when they registered their account 
+SELECT    
+	chirps.user_id,
+	chirps.body,
+    chirps.created_at AS chrip_created_at,
+    chirps.location,
+    users.handle,
+    users.email,
+    users.created_at AS user_created_at
+FROM chirps
+JOIN users ON users.id = chirps.user_id;
+
+-- Get all chirps columns and all users even if they haven't chirped
+SELECT * FROM chirps
+RIGHT JOIN users ON users.id = chirps.user_id;
+
+CREATE TABLE mentions(
+chirp_id INT, 
+user_id INT,
+FOREIGN KEY (chirp_id) REFERENCES chirps(id),
+FOREIGN KEY (user_id) REFERENCES users(id));
+
+SELECT * FROM mentions;
+
+SELECT * FROM chirps;
+
+INSERT INTO mentions (chirp_id, user_id) VALUE (2,4);
+
+SELECT  * FROM mentions;
+
+INSERT INTO mentions (chirp_id, user_id) VALUE (3,1);
+
+INSERT INTO mentions (chirp_id, user_id) VALUE (1,5);
+
+SELECT * FROM mentions
+JOIN users ON users.id = mentions.user_id;
+
+
+
